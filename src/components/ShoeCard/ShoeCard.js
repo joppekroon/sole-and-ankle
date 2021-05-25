@@ -36,8 +36,8 @@ const ShoeCard = ({
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
-          { variant === 'on-sale' ? <SaleFlag>Sale</SaleFlag> : undefined }
-          { variant === 'new-release' ? <NewFlag>Just Released!</NewFlag> : undefined }
+          { variant === 'on-sale' && <SaleFlag>Sale</SaleFlag> }
+          { variant === 'new-release' && <NewFlag>Just Released!</NewFlag>}
           <Image alt="" src={imageSrc} />
         </ImageWrapper>
         <Spacer size={12} />
@@ -50,7 +50,7 @@ const ShoeCard = ({
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
-          { variant === 'on-sale' ? <SalePrice>{formatPrice(salePrice)}</SalePrice> : undefined }
+          { variant === 'on-sale' && <SalePrice>{formatPrice(salePrice)}</SalePrice> }
         </Row>
       </Wrapper>
     </Link>
