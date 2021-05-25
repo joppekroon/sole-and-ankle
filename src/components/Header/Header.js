@@ -30,13 +30,13 @@ const Header = () => {
 };
 
 const MainHeader = styled.div`
-  padding: 0 32px;
+  padding: 18px 32px;
   border-bottom: 1px solid ${COLORS.gray[300]};
   
   height: 4.5rem;
   
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 48px;
 `;
