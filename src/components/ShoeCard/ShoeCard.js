@@ -7,10 +7,12 @@ import Spacer from '../Spacer';
 
 const ShoeCard = ({
   slug,
+  name,
   imageSrc,
+  price,
   salePrice,
   releaseDate,
-  ...delegated
+  numOfColors,
 }) => {
   // There are 3 variants possible, based on the props:
   //   - new-release
@@ -23,82 +25,35 @@ const ShoeCard = ({
   // both on-sale and new-release, but in this case, `on-sale`
   // will triumph and be the variant used.
   // prettier-ignore
-  const Details = typeof salePrice === 'number'
-    ? SaleDetails
+  const variant = typeof salePrice === 'number'
+    ? 'on-sale'
     : isNewShoe(releaseDate)
-      ? NewReleaseDetails
-      : DefaultDetails
-  ;
-      
+      ? 'new-release'
+      : 'default'
+  
+  
   return (
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
+          { variant === 'on-sale' ? <SaleFlag>Sale</SaleFlag> : undefined }
+          { variant === 'new-release' ? <NewFlag>Just Released!</NewFlag> : undefined }
           <Image alt="" src={imageSrc} />
         </ImageWrapper>
         <Spacer size={12} />
-        <Details {...delegated} salePrice={salePrice} />
+        <Row>
+          <Name>{name}</Name>
+          { variant === 'on-sale' ? 
+            <Price><del>{formatPrice(price)}</del></Price> :
+            <Price>{formatPrice(price)}</Price>
+          }
+        </Row>
+        <Row>
+          <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          { variant === 'on-sale' ? <SalePrice>{formatPrice(salePrice)}</SalePrice> : undefined }
+        </Row>
       </Wrapper>
     </Link>
-  );
-};
-
-const DefaultDetails = ({
-  name,
-  price,
-  numOfColors
-}) => {
-  return (
-    <>
-      <Row>
-        <Name>{name}</Name>
-        <Price>{formatPrice(price)}</Price>
-      </Row>
-      <Row>
-        <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
-      </Row>
-    </>
-  );
-};
-
-const SaleDetails = ({
-  name,
-  price,
-  numOfColors,
-  salePrice,
-}) => {
-  return (
-    <>
-      <Flag style={{ '--flag-color': COLORS.primary }}>Sale</Flag>
-      <Row>
-        <Name>{name}</Name>
-        <Price><del>{formatPrice(price)}</del></Price>
-      </Row>
-      <Row>
-        <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
-        <SalePrice>{formatPrice(salePrice)}</SalePrice>
-      </Row>
-    </>
-  );
-};
-
-const NewReleaseDetails = ({
-  name,
-  price,
-  numOfColors,
-}) => {
-  
-  return (
-    <>
-      <Flag style={{ '--flag-color': COLORS.secondary }}>Just Released!</Flag>
-      <Row>
-        <Name>{name}</Name>
-        <Price>{formatPrice(price)}</Price>
-      </Row>
-      <Row>
-        <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
-      </Row>
-    </>
   );
 };
 
@@ -133,7 +88,11 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  & > del {
+    color: ${COLORS.gray[700]};
+  }
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
@@ -146,17 +105,28 @@ const SalePrice = styled.span`
 
 const Flag = styled.div`
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 8px 10px;
+  top: 12px;
+  right: -4px;
   
-  margin-top: 12px;
-  margin-right: -4px;
+  padding: 0 10px;
   
-  background-color: var(--flag-color);
+  height: 2rem;
+  line-height: 2rem;
+  
+  font-size: 0.875rem;
+  font-weight: ${WEIGHTS.bold};
+  
   color: ${COLORS.white};
   
   border-radius: 2px;
+`;
+
+const SaleFlag = styled(Flag)`
+  background-color: ${COLORS.primary};
+`;
+
+const NewFlag = styled(Flag)`
+  background-color: ${COLORS.secondary};
 `;
 
 export default ShoeCard;
